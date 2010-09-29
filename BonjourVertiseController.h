@@ -15,12 +15,16 @@
 	IBOutlet NSTextField* portNumber;
 	IBOutlet NSTextField* bonjourType;
 	IBOutlet NSProgressIndicator* scanProgress;	
+	IBOutlet NSButton* cancelButton;
+	
+	NSConditionLock* terminationLock;
 }
 
 - (void) scanForPortWithMin:(int) minValue withMax:(int) maxValue;
 - (void) portScanThread;
 
 - (IBAction) scanClicked:(id) sender;
+- (IBAction) cancelClicked: (id) sender;
 - (IBAction) advertiseClicked:(id) sender;
 
 @end

@@ -16,6 +16,9 @@
 
 @implementation BonjourVertiseController
 
+- (void) awakeFromNib {
+	terminationLock = [[NSConditionLock alloc] initWithCondition:2];
+}
 - (NSString*) getHostnameWithIP:(const char*) inIPAddress {
     const char *port = NULL;
     int socktype = SOCK_STREAM;
@@ -53,9 +56,18 @@
 	[scanProgress setMaxValue:maxValue];
 	[scanProgress setDoubleValue:minValue];
 	[scanProgress startAnimation: self];
+	[cancelButton setEnabled:YES];
 	int i;
 	const char* ipaddress = [[ipAddress stringValue] UTF8String];
 	for (i=minValue;i<maxValue;i++) {
+		
+		[terminationLock lock];
+		if([terminationLock condition] == 1) {
+			[terminationLock unlockWithCondition:2];
+			[NSThread exit];
+		}
+		[terminationLock unlock];
+		
 		int theSocket;
 		[scanProgress setDoubleValue:i];
 		struct sockaddr_in serverAddress;
@@ -73,9 +85,9 @@
 		if ( connect( theSocket, (struct sockaddr *)&serverAddress, sizeof(serverAddress)) >= 0 ) {
 			[portNumber setStringValue:[NSString stringWithFormat:@"%d",i]];
 			close(theSocket);
-			break;
 		}
 	}
+	[cancelButton setEnabled:NO];
 	[scanProgress stopAnimation: self];
 }
 
@@ -111,6 +123,20 @@
 	if (err != kDNSServiceErr_NoError) {
         NSLog(@"error in DNSServiceRegister");
     }
+}
+
+- (IBAction) cancelClicked:(id) sender {
+	
+	// In the GUI thread, to signal for termination:
+	[terminationLock lock];
+	[terminationLock unlockWithCondition:1];
+	
+	// And to then wait for the worker thread to terminate
+	[terminationLock lockWhenCondition:2];
+	[terminationLock unlock];
+
+	[cancelButton setEnabled:NO];
+	[scanProgress stopAnimation: self];
 }
 
 @end
