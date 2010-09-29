@@ -12,7 +12,7 @@
 @interface BonjourVertiseController : NSObject {
 
 	IBOutlet NSTextField* ipAddress;
-	IBOutlet NSTextField* portNumber;
+	IBOutlet NSComboBox* portNumber;
 	IBOutlet NSTextField* bonjourType;
 	IBOutlet NSProgressIndicator* scanProgress;	
 	IBOutlet NSButton* cancelButton;

@@ -83,6 +83,7 @@
 		
 		
 		if ( connect( theSocket, (struct sockaddr *)&serverAddress, sizeof(serverAddress)) >= 0 ) {
+			[portNumber addItemWithObjectValue:[NSString stringWithFormat:@"%d",i]];
 			[portNumber setStringValue:[NSString stringWithFormat:@"%d",i]];
 			close(theSocket);
 		}
