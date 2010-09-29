@@ -73,6 +73,7 @@
 		if ( connect( theSocket, (struct sockaddr *)&serverAddress, sizeof(serverAddress)) >= 0 ) {
 			[portNumber setStringValue:[NSString stringWithFormat:@"%d",i]];
 			close(theSocket);
+			break;
 		}
 	}
 	[scanProgress stopAnimation: self];
@@ -81,7 +82,7 @@
 - (void) portScanThread {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init]; // Top-level pool
 	[self scanForPortWithMin:65000 withMax:65535];  // typical range for iPhone
-	[self scanForPortWithMin:49000 withMax:50000];  // typical range for iPad
+	[self scanForPortWithMin:49000 withMax:65000];  // typical range for iPad
 	[pool release];
 }
 
