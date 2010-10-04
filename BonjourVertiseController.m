@@ -73,7 +73,7 @@
 		struct sockaddr_in serverAddress;
 		
 		if ( (theSocket = socket( AF_INET, SOCK_STREAM, 0 )) < 0 ) {
-			NSLog(@"socket error");
+			NSLog(@"socket error on port: %d", i);
 		} 
 		
 		bzero( &serverAddress, sizeof(serverAddress) );
